@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "BwF3NawrE7A=",
+  "success": true,
+  "projectFilePath": "/home/villaim/Projects/Dat/Dat250/Dat250Ex/WebAPI/WebAPI.csproj",
+  "expectedPackageFiles": [
+    "/home/villaim/.nuget/packages/microsoft.aspnetcore.openapi/9.0.9/microsoft.aspnetcore.openapi.9.0.9.nupkg.sha512",
+    "/home/villaim/.nuget/packages/microsoft.openapi/1.6.17/microsoft.openapi.1.6.17.nupkg.sha512"
+  ],
+  "logs": []
+}
