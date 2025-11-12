@@ -21,7 +21,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<Users?> GetALlUsers(int id)
+    public async Task<Users?> GetUser(int id)
     {
         return _context.getUsers().FirstOrDefault(u => u.UserId == id);
     }
