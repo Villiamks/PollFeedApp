@@ -2,7 +2,7 @@
 
 public class Votes
 {
-    public int Id { get; set; }
+    public int VoteId { get; set; }
     public int UserId { get; set; }
     public int VoteOptionId { get; set; }
     

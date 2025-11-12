@@ -2,7 +2,7 @@
 
 public class VoteOptions
 {
-    public int Id { get; set; }
+    public int VoteOptionId { get; set; }
     public string Caption { get; set; }
     public int PollId { get; set; }
     

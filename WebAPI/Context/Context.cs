@@ -12,6 +12,42 @@ namespace WebAPI.Context
         public DbSet<Votes> Votes { get; set; }
         public DbSet<VoteOptions> Options { get; set; }
 
+        public List<Users> getUsers()
+        {
+            var users  = Users
+                .Include(u => u.Polls)
+                .Include(u => u.Votes)
+                .ToList();
+            return users;
+        }
+
+        public List<Polls> getPolls()
+        {
+            var polls = Polls
+                .Include(p => p.Creator)
+                .Include(p => p.Options)
+                .ToList();
+            return polls;
+        }
+
+        public List<VoteOptions> getVoteOptions()
+        {
+            var voteOptions = Options
+                .Include(o => o.Poll)
+                .Include(o => o.Votes)
+                .ToList();
+            return voteOptions;
+        }
+
+        public List<Votes> getVotes()
+        {
+            var votes = Votes
+                .Include(v => v.User)
+                .Include(v => v.VoteOption)
+                .ToList();
+            return votes;
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasPostgresExtension("uuid-ossp");
@@ -19,8 +55,9 @@ namespace WebAPI.Context
             modelBuilder.Entity<Users>(e =>
             {
                 e.ToTable("users");
-                e.HasKey(x => x.Id);
-                e.Property(x => x.Id).ValueGeneratedOnAdd().HasColumnName("id");
+                e.HasKey(x => x.UserId);
+                e.Property(x => x.UserId).ValueGeneratedOnAdd().HasColumnName("userid");
+                e.Property(x => x.UserName).HasColumnName("username");
                 e.Property(x => x.Email).HasColumnName("email");
                 e.Property(x => x.PasswordHash).HasColumnName("passwordhash");
                 e.Property(x => x.Salt).HasColumnName("salt");
@@ -28,8 +65,8 @@ namespace WebAPI.Context
             modelBuilder.Entity<Polls>(e =>
             {
                 e.ToTable("polls");
-                e.HasKey(x => x.Id);
-                e.Property(x => x.Id).ValueGeneratedOnAdd().HasColumnName("id");
+                e.HasKey(x => x.PollId);
+                e.Property(x => x.PollId).ValueGeneratedOnAdd().HasColumnName("pollid");
                 e.Property(x => x.Question).HasColumnName("question");
                 e.Property(x => x.UserId).HasColumnName("userid");
                 e.HasOne(x => x.Creator).WithMany(x => x.Polls)
@@ -40,8 +77,8 @@ namespace WebAPI.Context
             modelBuilder.Entity<VoteOptions>(e =>
             {
                 e.ToTable("voteoptions");
-                e.HasKey(x => x.Id);
-                e.Property(x => x.Id).ValueGeneratedOnAdd().HasColumnName("id");
+                e.HasKey(x => x.VoteOptionId);
+                e.Property(x => x.VoteOptionId).ValueGeneratedOnAdd().HasColumnName("voteoptionid");
                 e.Property(x => x.Caption).HasColumnName("caption");
                 e.Property(x => x.PollId).HasColumnName("pollid");
                 e.HasOne(x => x.Poll).WithMany(x => x.Options)
@@ -52,8 +89,8 @@ namespace WebAPI.Context
             modelBuilder.Entity<Votes>(e =>
             {
                 e.ToTable("votes");
-                e.HasKey(x => x.Id);
-                e.Property(x => x.Id).ValueGeneratedOnAdd().HasColumnName("id");
+                e.HasKey(x => x.VoteId);
+                e.Property(x => x.VoteId).ValueGeneratedOnAdd().HasColumnName("voteid");
                 e.Property(x => x.UserId).HasColumnName("userid");
                 e.Property(x => x.VoteOptionId).HasColumnName("voteoptionid");
                 e.HasOne(x => x.User).WithMany(x => x.Votes)
