@@ -1,7 +1,8 @@
 /bin
 bin/
-/obj
-obj/
+*.obj
+**/obj/
+**/obj/*.obj
 .idea
 .idea/
 Debug/
