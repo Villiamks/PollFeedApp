@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using WebAPI.Data;
+using WebAPI.Data.Repos;
 using WebAPI.Services;
 using DbContext = WebAPI.Data.DbContext;
 
@@ -12,6 +13,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddDbContextFactory<DbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddScoped<UserContext>();
 builder.Services.AddScoped<IUserService,  UserService>();
 
 builder.Services.AddControllers();
