@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using WebAPI.Context;
+using WebAPI.Data;
+using WebAPI.Services;
+using DbContext = WebAPI.Data.DbContext;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,8 +9,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-builder.Services.AddDbContextFactory<Context>(options =>
+builder.Services.AddDbContextFactory<DbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<IUserService,  UserService>();
 
 builder.Services.AddControllers();
 

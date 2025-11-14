@@ -1,52 +1,16 @@
 ﻿using ClassLibrary;
 using Microsoft.EntityFrameworkCore;
 
-namespace WebAPI.Context
+namespace WebAPI.Data
 {
-    public partial class Context : DbContext
+    public partial class DbContext : Microsoft.EntityFrameworkCore.DbContext
     {
-        public Context(DbContextOptions<Context> options) : base(options) {  }
+        public DbContext(DbContextOptions<DbContext> options) : base(options) {  }
 
         public DbSet<Users> Users { get; set; }
         public DbSet<Polls> Polls { get; set; }
         public DbSet<Votes> Votes { get; set; }
         public DbSet<VoteOptions> Options { get; set; }
-
-        public List<Users> getUsers()
-        {
-            var users  = Users
-                .Include(u => u.Polls)
-                .Include(u => u.Votes)
-                .ToList();
-            return users;
-        }
-
-        public List<Polls> getPolls()
-        {
-            var polls = Polls
-                .Include(p => p.Creator)
-                .Include(p => p.Options)
-                .ToList();
-            return polls;
-        }
-
-        public List<VoteOptions> getVoteOptions()
-        {
-            var voteOptions = Options
-                .Include(o => o.Poll)
-                .Include(o => o.Votes)
-                .ToList();
-            return voteOptions;
-        }
-
-        public List<Votes> getVotes()
-        {
-            var votes = Votes
-                .Include(v => v.User)
-                .Include(v => v.VoteOption)
-                .ToList();
-            return votes;
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -1,5 +1,7 @@
 ﻿using ClassLibrary;
 using Microsoft.AspNetCore.Mvc;
+using WebAPI.Data.Repos;
+using WebAPI.Services;
 
 namespace WebAPI.Controllers;
 
@@ -7,49 +9,34 @@ namespace WebAPI.Controllers;
 [Route("api/[controller]")]
 public class UserController : ControllerBase
 {
-    private Context.Context _context;
+    private UserService _userService;
     
-    public UserController(Context.Context context)
+    public UserController(UserService userService)
     {
-        _context = context;
+        _userService = userService;
     }
 
     [HttpGet]
     public async Task<IEnumerable<Users>> GetALlUsers()
     {
-        return _context.getUsers();
+        return await _userService.GetAllUsers();
     }
 
     [HttpGet("{id}")]
     public async Task<Users?> GetUser(int id)
     {
-        return _context.getUsers().FirstOrDefault(u => u.UserId == id);
+        return await _userService.GetUserById(id);
     }
 
     [HttpPost]
     public async Task CreateUser([FromBody] Users user)
     {
-        Users newUser = new Users()
-        {
-            UserName = user.UserName,
-            Email = user.Email,
-            PasswordHash = user.PasswordHash,
-            Salt = user.Salt,
-        };
-        
-        _context.Users.Add(newUser);
-        await _context.SaveChangesAsync();
+        await _userService.CreateUser(user);
     }
 
     [HttpDelete("{id}")]
     public async Task DeleteUser(int id)
     {
-        Users? user = _context.Users.FirstOrDefault(u => u.UserId == id);
-        if (user == null)
-        {
-            return;
-        }
-        _context.Users.Remove(user);
-        await _context.SaveChangesAsync();
+        await _userService.DeleteUser(id);
     }
 }
