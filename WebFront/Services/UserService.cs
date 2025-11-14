@@ -18,7 +18,7 @@ public class UserService : IUserService
 
     public async Task<Users?> GetUser(int id)
     {
-        return await _httpClient.GetFromJsonAsync<Users>($"api/users/{id}");
+        return await _httpClient.GetFromJsonAsync<Users>($"api/user/{id}");
     }
 
     public async Task CreateUser(Users user)
@@ -28,6 +28,6 @@ public class UserService : IUserService
     
     public async Task DeleteUser(int id)
     {
-        await _httpClient.DeleteAsync($"api/users/{id}");
+        await _httpClient.DeleteAsync($"api/user/{id}");
     }
 }
