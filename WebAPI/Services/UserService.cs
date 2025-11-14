@@ -1,36 +1,41 @@
 using ClassLibrary;
-using WebAPI.Data.Repos;
+using Microsoft.EntityFrameworkCore;
+using DbContext = WebAPI.Data.DbContext;
 
 namespace WebAPI.Services;
 
 public class UserService : IUserService
 {
-    private UserContext _dbContext;
-
-    public UserService(UserContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
-
+    
+    private DbContext _context;
+    
     public async Task<IEnumerable<Users>> GetAllUsers()
     {
-        return _dbContext.GetUsers();
+        var users  = _context.Users
+            .Include(u => u.Polls)
+            .Include(u => u.Votes);
+        return users;
     }
 
     public async Task<Users?> GetUserById(int id)
     {
-        return await _dbContext.GetUserById(id);
+        return GetAllUsers().Result.FirstOrDefault(u => u.UserId == id);
     }
-
-    public async Task CreateUser(Users user)
+    
+    public async Task CreateUser(Users newUser)
     {
-        _dbContext.AddUser(user);
+        _context.Users.Add(newUser);
+        await _context.SaveChangesAsync();
     }
 
     public async Task DeleteUser(int id)
     {
-        var user  = await GetUserById(id);
+        var user = await GetUserById(id);
         if (user != null)
-            _dbContext.DeleteUser(user);
+        {
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+        }
     }
+
 }

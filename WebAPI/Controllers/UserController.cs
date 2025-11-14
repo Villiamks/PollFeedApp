@@ -1,6 +1,5 @@
 ﻿using ClassLibrary;
 using Microsoft.AspNetCore.Mvc;
-using WebAPI.Data.Repos;
 using WebAPI.Services;
 
 namespace WebAPI.Controllers;
