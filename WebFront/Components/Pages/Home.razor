@@ -8,3 +8,19 @@
 <h1>Hello, world!</h1>
 
 Welcome to your new app.
+<li>
+    @foreach (var User in users)
+    {
+        <div>@User.UserName</div>
+    }
+</li>
+
+@code
+{
+    private List<Users> users = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        users = (await userService.GetUsers()).ToList();
+    }
+}
