@@ -12,22 +12,3 @@ else
         <button type="button"><span>Logg out</span></button>
     </div>
 }
-
-@code {
-    bool showNav;
-    
-    private async Task ToggleNav()
-    {
-        showNav = !showNav;
-    }
-
-    private async Task Loggout()
-    {
-        //TODO 
-    }
-
-    protected async override Task OnInitializedAsync()
-    {
-        showNav = false;
-    }
-}
