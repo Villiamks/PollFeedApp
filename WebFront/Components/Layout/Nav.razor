@@ -1,0 +1,33 @@
+
+@if (!showNav)
+{
+    <button class="navbtn" @onclick="ToggleNav">=</button>
+}
+else
+{
+    <div class="navbox">
+        <div class="btnclose"><button @onclick="ToggleNav">x</button></div>
+        <a href=""><span> Polls </span></a>
+        <a href="newpoll"><span>New Poll</span></a>
+        <button type="button"><span>Logg out</span></button>
+    </div>
+}
+
+@code {
+    bool showNav;
+    
+    private async Task ToggleNav()
+    {
+        showNav = !showNav;
+    }
+
+    private async Task Loggout()
+    {
+        //TODO 
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        showNav = false;
+    }
+}
