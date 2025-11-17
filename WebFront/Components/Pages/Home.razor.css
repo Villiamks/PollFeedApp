@@ -1,0 +1,30 @@
+﻿
+.pollbox {
+    width: 60%;
+    margin-top: 2%;
+    padding: 2%;
+
+    background-color: hsl(0, 0%, 95%);
+    border: 0.05rem solid black;
+    border-radius: 0.5rem;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.votebtn {
+    width: 90%;
+    margin: 0.5rem;
+    border-radius: 0.5rem;
+}
+.votecap {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+.votespan {
+    width: 24%;
+    position: absolute;
+    text-align: end;
+}

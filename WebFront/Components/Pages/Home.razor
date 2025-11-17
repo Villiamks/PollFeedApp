@@ -6,22 +6,20 @@
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
-<li>
-    @foreach (var User in users)
+<div class="outerbox">
+    <h1>Polls</h1>
+    
+    @foreach (Polls poll in PollList)
     {
-        <div>@User.UserName</div>
+        <div class="pollbox">
+            <h2>@poll.Question</h2>
+            @foreach (VoteOptions vo in poll.Options ?? [])
+            {
+                <button class="votebtn" type="button" @onclick="() => Vote(vo)" >
+                    <span class="votespan"> Votes: @vo.Votes?.Count</span>
+                    <span class="votecap">@vo.Caption</span>
+                </button>
+            }
+        </div>
     }
-</li>
-
-@code
-{
-    private List<Users> users = new();
-
-    protected override async Task OnInitializedAsync()
-    {
-        users = (await userService.GetUsers()).ToList();
-    }
-}
+</div>

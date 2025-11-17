@@ -1,0 +1,14 @@
+﻿@page "/login"
+@inject NavigationManager nv
+
+<PageTitle>NewPoll</PageTitle>
+
+<div class="outerbox">
+    <h1>Login</h1>
+    
+    <div class="box">
+        <input type="text" placeholder="username" @bind="username" />
+        <input type="password" placeholder="password" @bind="password" />
+        <button type="button" @onclick="HandleLogin" >Login</button>
+    </div>
+</div>
