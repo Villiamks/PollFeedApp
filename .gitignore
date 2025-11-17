@@ -7,6 +7,8 @@ bin/
 .idea/
 Debug/
 /Debug
+.config
+.config/
 
 appsettings.json
 */appsettings.json

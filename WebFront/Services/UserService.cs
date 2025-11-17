@@ -13,7 +13,7 @@ public class UserService : IUserService
     
     public async Task<IEnumerable<Users>?> GetUsers()
     {
-        return await _httpClient.GetFromJsonAsync<IEnumerable<Users>>("api/users");
+        return await _httpClient.GetFromJsonAsync<IEnumerable<Users>>("api/user");
     }
 
     public async Task<Users?> GetUser(int id)
@@ -23,7 +23,7 @@ public class UserService : IUserService
 
     public async Task CreateUser(Users user)
     {
-        await _httpClient.PostAsJsonAsync("api/users", user);
+        await _httpClient.PostAsJsonAsync("api/user", user);
     }
     
     public async Task DeleteUser(int id)
