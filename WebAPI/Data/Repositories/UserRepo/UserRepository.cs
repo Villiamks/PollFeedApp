@@ -17,7 +17,6 @@ public class UserRepository : IRepository<Users>
     {
         using var context = _contextFactory.CreateDbContext();
         return await context.Set<Users>()
-            .Include(p => p.Polls)
             .ToListAsync();
     }
 
@@ -25,7 +24,6 @@ public class UserRepository : IRepository<Users>
     {
         using var context = _contextFactory.CreateDbContext();
         return await context.Set<Users>()
-            .Include(p => p.Polls)
             .FirstOrDefaultAsync(u => u.UserId == id);
     }
     
