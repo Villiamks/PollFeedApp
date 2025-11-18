@@ -18,7 +18,8 @@ public partial class NewPoll
 
     private async Task CreatePoll()
     {
-        //TODO
+        
+        
         nv.NavigateTo("");
     }
 
