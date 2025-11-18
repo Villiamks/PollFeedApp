@@ -25,4 +25,25 @@ public class VoteRepository : IRepository<Votes>
             .Include(vo => vo.VoteOption)
             .FirstOrDefaultAsync(v => v.VoteId == id);
     }
+
+    public async Task<Votes> CreateAsync(Votes entity)
+    {
+        using var context = _contextFactory.CreateDbContext();
+        context.Set<Votes>().Add(entity);
+        await context.SaveChangesAsync();
+        return entity;
+    }
+
+    public async Task<Votes?> DeleteAsync(int id)
+    {
+        using var context = _contextFactory.CreateDbContext();
+        var entity = await context.Set<Votes>()
+            .FirstOrDefaultAsync(v => v.VoteId == id);
+        
+        if (entity == null) return  null;
+
+        context.Set<Votes>().Remove(entity);
+        await context.SaveChangesAsync();
+        return entity;
+    }
 }

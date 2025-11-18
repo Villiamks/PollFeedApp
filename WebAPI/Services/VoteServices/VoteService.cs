@@ -20,9 +20,21 @@ public class VoteService : IVoteService
         return votes;
     }
 
-    public async Task<Votes> GetVoteById(int id)
+    public async Task<Votes?> GetVoteById(int id)
     {
-        var votes = await _voteRepository.GetByIdAsync(id);
+        var vote = await _voteRepository.GetByIdAsync(id);
+        return vote;
+    }
+
+    public async Task<Votes> CreateVote(Votes vote)
+    {
+        var votes = await _voteRepository.CreateAsync(vote);
+        return votes;
+    }
+
+    public async Task<Votes?> DeleteVote(int id)
+    {
+        var votes = await _voteRepository.DeleteAsync(id);
         return votes;
     }
 }

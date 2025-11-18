@@ -16,18 +16,45 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Users>>> GetAllUsers()
+    public async Task<ActionResult<IEnumerable<Users>>> GetAll()
     {
         var users = await _userService.GetAllUsers();
         return Ok(users);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Users?>> GetUser(int id)
+    public async Task<ActionResult<Users?>> GetById(int id)
     {
         var user = await _userService.GetUserById(id);
+        if (user == null)
+        {
+            return  NotFound($"User with id {id} not found");
+        }
         return Ok(user);
     }
 
-    //TODO Post and Delete
+    [HttpPost]
+    public async Task<ActionResult<Users>> Create(Users user)
+    {
+        try
+        {
+            var createdUser = await _userService.CreateUser(user);
+            return CreatedAtAction(nameof(GetById), new {id = createdUser.UserId}, createdUser);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<Users>> Delete(int id)
+    {
+        var deletedUser = await _userService.DeleteUserById(id);
+        if (deletedUser == null)
+        {
+            return NotFound($"User with id {id} not found");
+        }
+        return Ok(deletedUser);
+    }
 }

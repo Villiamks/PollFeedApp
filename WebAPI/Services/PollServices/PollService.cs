@@ -19,9 +19,23 @@ public class PollService : IPollsService
         return polls;
     }
 
-    public async Task<Polls> GetPollById(int id)
+    public async Task<Polls?> GetPollById(int id)
     {
         var  poll = await _pollRepository.GetByIdAsync(id);
         return poll;
+    }
+
+    public async Task<Polls> CreatePoll(Polls poll)
+    {
+        if (poll.Options == null || poll.Options.Count < 2)
+        {
+            throw new ArgumentException("A poll must have at least 2 options.");
+        }
+        return await _pollRepository.CreateAsync(poll);
+    }
+
+    public async Task<Polls?> DeletePoll(int id)
+    {
+        return await _pollRepository.DeleteAsync(id);
     }
 }

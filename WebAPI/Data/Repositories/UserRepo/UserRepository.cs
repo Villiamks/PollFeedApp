@@ -30,6 +30,25 @@ public class UserRepository : IRepository<Users>
             .Include(v => v.Votes)
             .FirstOrDefaultAsync(u => u.UserId == id);
     }
-    
-    //TODO: Create and Delete
+
+    public async Task<Users> CreateAsync(Users entity)
+    {
+        using var context = _contextFactory.CreateDbContext();
+        context.Set<Users>().Add(entity);
+        await context.SaveChangesAsync();
+        return entity;
+    }
+
+    public async Task<Users?> DeleteAsync(int id)
+    {
+        using var context = _contextFactory.CreateDbContext();
+        var entity = await context.Set<Users>()
+            .FirstOrDefaultAsync(u => u.UserId == id);
+
+        if (entity == null) return null;
+        
+        context.Set<Users>().Remove(entity);
+        await context.SaveChangesAsync();
+        return entity;
+    }
 }
