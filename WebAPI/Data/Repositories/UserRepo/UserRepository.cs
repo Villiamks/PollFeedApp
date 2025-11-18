@@ -17,13 +17,17 @@ public class UserRepository : IRepository<Users>
     {
         using var context = _contextFactory.CreateDbContext();
         return await context.Set<Users>()
+            .Include(p => p.Polls)
+            .Include(v => v.Votes)
             .ToListAsync();
     }
 
-    public async Task<Users> GetByIdAsync(int id)
+    public async Task<Users?> GetByIdAsync(int id)
     {
         using var context = _contextFactory.CreateDbContext();
         return await context.Set<Users>()
+            .Include(p => p.Polls)
+            .Include(v => v.Votes)
             .FirstOrDefaultAsync(u => u.UserId == id);
     }
     

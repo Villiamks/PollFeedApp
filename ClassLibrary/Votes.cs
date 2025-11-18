@@ -11,6 +11,6 @@ public class Votes
     [ForeignKey(nameof(VoteOptionId))]
     public int VoteOptionId { get; set; }
     
-    public Users User { get; set; }
-    public VoteOptions VoteOption { get; set; }
+    public Users? User { get; set; }
+    public VoteOptions? VoteOption{ get; set; }
 }

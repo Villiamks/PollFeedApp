@@ -9,8 +9,10 @@ public class ApplicationDbContext : DbContext
     {
     }
     
-    //TODO: do DbSet for all entities
     public DbSet<Users> Users => Set<Users>();
+    public DbSet<Votes> Votes => Set<Votes>();
+    public DbSet<VoteOptions> VoteOptions => Set<VoteOptions>();
+    public DbSet<Polls> Polls => Set<Polls>();
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
