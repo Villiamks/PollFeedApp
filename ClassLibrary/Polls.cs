@@ -7,10 +7,11 @@ public class Polls
 {
     [Key]
     public int PollId { get; set; }
+    [Required]
     public string Question { get; set; }
     [ForeignKey(nameof(UserId))]
     public int UserId { get; set; }
     
-    public Users Creator { get; set; }
-    public ICollection<VoteOptions>? Options { get; set; }
+    public Users? Creator { get; set; }
+    public ICollection<VoteOptions>? Options { get; set; } = new List<VoteOptions>();
 }
