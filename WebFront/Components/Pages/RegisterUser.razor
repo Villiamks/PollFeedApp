@@ -1,0 +1,23 @@
+﻿@page "/RegisterUser"
+
+<div class="outerbox">
+    <h1>RegisterUser</h1>
+    
+    <div class="box">
+        <input type="text" placeholder="username" @bind="Username"/>
+        <input type="password" placeholder="password" @bind="Password"/>
+        <input type="password" placeholder="password" @bind="RepeatPass"/>
+        <button type="button" @onclick="HandleRegistration">Login</button>
+    </div>
+</div>
+
+@code {
+    private String? Username = "";
+    private String? Password = "";
+    private String? RepeatPass = "";
+
+    private async Task HandleRegistration()
+    {
+        
+    }
+}
