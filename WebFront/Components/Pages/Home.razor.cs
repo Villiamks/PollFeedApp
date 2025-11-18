@@ -9,16 +9,26 @@ public partial class Home
     private async Task PopulatePolls()
     {
         PollList.Clear();
-        var list = await PollService.GetAllPolls();
+        var tmp = await PollService.GetAllPolls();
+        List<Polls> list = tmp.ToList();
         if (list != null)
         {
-            PollList = list.ToList();
+            PollList = list;
+        }
+        else
+        {
+            PollList = [];
         }
     }
     
     private async Task Vote(VoteOptions vo)
     {
-        //TODO
+        Votes vote = new Votes()
+        {
+            UserId = null,
+            VoteOptionId = vo.VoteOptionId
+        };
+        await VoteService.CreateVote(vote);
     }
 
     protected override async Task OnInitializedAsync()

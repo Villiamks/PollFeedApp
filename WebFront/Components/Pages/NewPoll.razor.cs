@@ -18,8 +18,17 @@ public partial class NewPoll
 
     private async Task CreatePoll()
     {
-        
-        
+        Polls nPoll = new Polls()
+        {
+            UserId = NPoll.UserId,
+            Question =  NPoll.Question
+        };
+        foreach (VoteOptions opt in NPoll.Options ?? [])
+        {
+            nPoll.Options?.Add(opt);
+            await VoteOptionService.CreateVoteOption(opt);
+        }
+        await PollService.CreatePoll(nPoll);
         nv.NavigateTo("");
     }
 

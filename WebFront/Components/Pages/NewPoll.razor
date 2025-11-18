@@ -1,6 +1,9 @@
 @page "/newpoll"
 @inject NavigationManager nv
 @using ClassLibrary
+@using WebFront.Services
+@inject IPollService PollService
+@inject IVoteOptionService VoteOptionService
 
 <PageTitle>NewPoll</PageTitle>
 

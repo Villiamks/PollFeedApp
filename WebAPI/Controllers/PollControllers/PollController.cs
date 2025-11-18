@@ -16,7 +16,7 @@ public class PollController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Polls>>> GetAllPolls()
+    public async Task<ActionResult<IEnumerable<Polls>?>> GetAllPolls()
     {
         var polls = await _pollService.GetAllPolls();
         return Ok(polls);

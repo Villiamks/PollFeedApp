@@ -7,7 +7,7 @@ public class Votes
 {
     [Key]
     public int VoteId { get; set; }
-    public int UserId { get; set; }
+    public int? UserId { get; set; }
     [ForeignKey(nameof(VoteOptionId))]
     public int VoteOptionId { get; set; }
     

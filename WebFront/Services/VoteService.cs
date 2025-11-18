@@ -13,21 +13,21 @@ public class VoteService : IVoteService
 
     public async Task<IEnumerable<Votes>?> GetVotes()
     {
-        return await _httpClient.GetFromJsonAsync<IEnumerable<Votes>>("api/Votes");
+        return await _httpClient.GetFromJsonAsync<IEnumerable<Votes>>("api/Vote");
     }
 
     public async Task<Votes?> GetVoteOption(int id)
     {
-        return await _httpClient.GetFromJsonAsync<Votes>($"api/Votes/{id}");
+        return await _httpClient.GetFromJsonAsync<Votes>($"api/Vote/{id}");
     }
 
     public async Task CreateVote(Votes vote)
     {
-        await _httpClient.PostAsJsonAsync("api/Votes", vote);
+        await _httpClient.PostAsJsonAsync("api/Vote", vote);
     }
     
     public async Task DeleteVote(int id)
     {
-        await _httpClient.DeleteAsync($"api/Votes/{id}");
+        await _httpClient.DeleteAsync($"api/Vote/{id}");
     }
 }
