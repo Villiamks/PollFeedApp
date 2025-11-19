@@ -10,6 +10,9 @@ builder.Services.AddRazorComponents()
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5126")});
 
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IVoteService, VoteService>();
+builder.Services.AddScoped<IPollService, PollService>();
+builder.Services.AddScoped<IVoteOptionService, VoteOptionService>();
 
 var app = builder.Build();
 
