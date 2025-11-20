@@ -1,4 +1,8 @@
-﻿namespace WebFront.Components.Pages;
+﻿using ClassLibrary;
+using Microsoft.JSInterop;
+using WebFront.Services;
+
+namespace WebFront.Components.Pages;
 
 public partial class Login
 {
@@ -7,9 +11,18 @@ public partial class Login
 
     private async Task HandleLogin()
     {
-        //TODO
+        var userList = await UserService.GetUsers();
+        Users user = userList.ToList().FirstOrDefault(u => u.UserName == username);
 
-        nv.NavigateTo("");
+        if (user != null && BCrypt.Net.BCrypt.HashPassword(password, user.Salt) == user.PasswordHash)
+        {
+            //TODO login bruker via valkey
+            nv.NavigateTo("");
+        }
+        else
+        {
+            await js.InvokeVoidAsync("alert", "Wrong username or password");
+        }
     }
 
     private async Task ToNewUser()

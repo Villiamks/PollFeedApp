@@ -34,6 +34,6 @@ public partial class RegisterUser
     private async Task<bool> Exists(string username)
     {
         var usersList = await UserService.GetUsers();
-        return usersList?.ToList().Any(u => u.UserName == username) ??  false;
+        return usersList?.ToList().Any(u => u.UserName.ToLower() == username.ToLower()) ??  false;
     }
 }
