@@ -20,7 +20,8 @@ public partial class Nav
 
     private async Task Loggout()
     {
-        //TODO 
+        LoginService.Logout();
+        nv.NavigateTo("login");
     }
 
     protected async override Task OnInitializedAsync()

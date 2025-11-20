@@ -13,6 +13,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IVoteService, VoteService>();
 builder.Services.AddScoped<IPollService, PollService>();
 builder.Services.AddScoped<IVoteOptionService, VoteOptionService>();
+builder.Services.AddScoped<ILoginService, LoginService>();
 
 var app = builder.Build();
 

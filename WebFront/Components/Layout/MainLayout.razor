@@ -1,4 +1,8 @@
-﻿@inherits LayoutComponentBase
+﻿@using WebFront.Services
+@inherits LayoutComponentBase
+
+@inject ILoginService LoginService
+@inject NavigationManager nv
 
 <div class="page">
     <main>
@@ -7,3 +11,14 @@
         @Body
     </main>
 </div>
+
+@code
+{
+    protected override async Task OnInitializedAsync()
+    {
+        if (!LoginService.IsLoggedIn() && nv.Uri != nv.BaseUri + "login" && nv.Uri != nv.BaseUri + "RegisterUser")
+        {
+            nv.NavigateTo("", forceLoad:true);
+        }
+    }
+}

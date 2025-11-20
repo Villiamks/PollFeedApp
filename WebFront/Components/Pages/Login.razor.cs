@@ -16,7 +16,7 @@ public partial class Login
 
         if (user != null && BCrypt.Net.BCrypt.HashPassword(password, user.Salt) == user.PasswordHash)
         {
-            //TODO login bruker via valkey
+            LoginService.Login(user);
             nv.NavigateTo("");
         }
         else

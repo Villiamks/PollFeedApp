@@ -1,4 +1,6 @@
+@using WebFront.Services
 @inject NavigationManager nv
+@inject ILoginService LoginService
 
 @if (showNav)
 {
@@ -6,7 +8,7 @@
         <div class="btnclose"><button @onclick="ToggleNav">x</button></div>
         <button type="button" @onclick="() => NavigateTo(PollsUrl)" ><span> Polls </span></button>
         <button type="button" @onclick="() => NavigateTo(NewPollUrl)" ><span>New Poll</span></button>
-        @if (false)
+        @if (LoginService.IsLoggedIn())
         {
             <button type="button" @onclick="Loggout"><span>Logg out</span></button>
         }
