@@ -31,7 +31,7 @@ public class LoginService : ILoginService
         return true; //Temporary 
     }
     
-    public Users GetLoggedinnUser()
+    public Users? GetLoggedinnUser()
     {
         return LoggedinnUser;
     }

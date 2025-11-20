@@ -23,7 +23,7 @@ public class PollService : IPollService
 
     public async Task CreatePoll(Polls poll)
     {
-        await _httpClient.PostAsJsonAsync("api/poll", poll);
+         await _httpClient.PostAsJsonAsync<Polls?>("api/poll", poll);
     }
     
     public async Task DeletePoll(int id)

@@ -10,7 +10,7 @@ public partial class NewPoll
     {
         VoteOptions vo = new VoteOptions()
         {
-            Poll = NPoll,
+            Poll =  NPoll,
             Caption = ""
         };
         NPoll.Options?.Add(vo);
@@ -21,13 +21,16 @@ public partial class NewPoll
         Polls nPoll = new Polls()
         {
             UserId = NPoll.UserId,
-            Question =  NPoll.Question
+            Question =  NPoll.Question,
+            Options = []
         };
-        foreach (VoteOptions opt in NPoll.Options ?? [])
+
+        nPoll.Options = NPoll.Options?.Select(op => new VoteOptions()
         {
-            nPoll.Options?.Add(opt);
-            await VoteOptionService.CreateVoteOption(opt);
-        }
+            Poll = nPoll,
+            Caption = op.Caption,
+        }).ToList();
+        
         await PollService.CreatePoll(nPoll);
         nv.NavigateTo("");
     }
@@ -36,10 +39,15 @@ public partial class NewPoll
     {
         NPoll = new Polls()
         {
-            Creator = null,
             Question = "",
             Options = []
         };
         await AddOption();
+        
+        Users? loggedIn = LoginService.GetLoggedinnUser();
+        if (loggedIn != null)
+        {
+            NPoll.UserId = /*loggedIn.UserId*/ 0;
+        }
     }
 }
