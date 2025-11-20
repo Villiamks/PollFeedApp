@@ -21,8 +21,18 @@ public class UserService : IUserService
         return await _httpClient.GetFromJsonAsync<Users>($"api/user/{id}");
     }
 
-    public async Task CreateUser(Users user)
+    public async Task CreateUser(string username, string password, string email)
     {
+        string salt = BCrypt.Net.BCrypt.GenerateSalt(12);
+        string hash = BCrypt.Net.BCrypt.HashPassword(password, salt);
+        Users user = new Users()
+        {
+            UserName = username,
+            Email = email,
+            PasswordHash = hash,
+            Salt = salt,
+        };
+        
         await _httpClient.PostAsJsonAsync("api/user", user);
     }
     
