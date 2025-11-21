@@ -14,7 +14,16 @@ public class PollService : IPollService
 
     public async Task<IEnumerable<Polls>?> GetAllPolls()
     {
-        return await _httpClient.GetFromJsonAsync<IEnumerable<Polls>>("api/poll");
+        var inn = await _httpClient.GetFromJsonAsync<IEnumerable<PollDTO>>("api/poll");
+        return inn.Select(pdto => new Polls()
+        {
+            UserId = pdto.UserId,
+            Question = pdto.Question,
+            Options = pdto.Options.Select(opt => new VoteOptions()
+            {
+                Caption = opt.Caption
+            }).ToList()
+        }).ToList();
     }
 
     public async Task<Polls?> GetPollById(int pollId)
