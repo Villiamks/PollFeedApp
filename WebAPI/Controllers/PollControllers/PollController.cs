@@ -1,6 +1,7 @@
 using ClassLibrary;
 using ClassLibrary.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using WebAPI.Interfaces.PollInterfaces;
 
 namespace WebAPI.Controllers.PollControllers;
@@ -17,10 +18,21 @@ public class PollController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Polls>>> GetAll()
+    public async Task<ActionResult<IEnumerable<PollDTO>>> GetAll()
     {
         var polls = await _pollService.GetAllPolls();
-        return Ok(polls);
+
+        List<PollDTO> pollDtos = polls.Select(poll => new PollDTO()
+        {
+            UserId = poll.UserId,
+            Question = poll.Question,
+            Options = poll.Options?.Select(opt => new VoteOptionDTO()
+            {
+                Caption = opt.Caption
+            }).ToList()
+        }).ToList();
+        
+        return Ok(pollDtos);
     }
 
     [HttpGet("{id}")]
