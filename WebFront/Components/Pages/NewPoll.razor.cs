@@ -1,9 +1,14 @@
 ﻿using ClassLibrary;
+using ClassLibrary.DTOs;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 
 namespace WebFront.Components.Pages;
 
 public partial class NewPoll
 {
+    [Inject] private ProtectedSessionStorage SessionStorage { get; set; } = default!;
+    
     private Polls NPoll;
 
     private async Task AddOption()
@@ -18,17 +23,17 @@ public partial class NewPoll
 
     private async Task CreatePoll()
     {
-        Polls nPoll = new Polls()
+        PollDTO dtoPoll = new PollDTO()
         {
             UserId = NPoll.UserId,
-            Question =  NPoll.Question
+            Question = NPoll.Question,
         };
-        foreach (VoteOptions opt in NPoll.Options ?? [])
+        dtoPoll.Options = NPoll.Options?.Select(op => new VoteOptionDTO()
         {
-            nPoll.Options?.Add(opt);
-            await VoteOptionService.CreateVoteOption(opt);
-        }
-        await PollService.CreatePoll(nPoll);
+            Caption = op.Caption
+        }).ToList(); 
+            
+        await PollService.CreatePoll(dtoPoll);
         nv.NavigateTo("");
     }
 
@@ -36,10 +41,17 @@ public partial class NewPoll
     {
         NPoll = new Polls()
         {
-            Creator = null,
             Question = "",
             Options = []
         };
         await AddOption();
+
+        var sessionToken = SessionStorage.GetAsync<string>("sessionToken").ToString();
+        
+        Users? loggedIn = await LoginService.GetLoggedinnUser(sessionToken ?? "");
+        if (loggedIn != null)
+        {
+            NPoll.UserId = /*loggedIn.UserId*/ 0;
+        }
     }
 }
