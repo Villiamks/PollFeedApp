@@ -26,9 +26,7 @@ public class LoginService : ILoginService
     public bool IsLoggedIn()
     {
         //TODO check if there is a user logged inn via Valkey
-        //return LoggedinnUser != null;
-
-        return true; //Temporary 
+        return LoggedinnUser != null;
     }
     
     public Users GetLoggedinnUser()
