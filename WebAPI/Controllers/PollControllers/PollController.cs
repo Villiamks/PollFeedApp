@@ -24,6 +24,7 @@ public class PollController : ControllerBase
 
         List<PollDTO> pollDtos = polls.Select(poll => new PollDTO()
         {
+            PollId =  poll.PollId,
             UserId = poll.UserId,
             Question = poll.Question,
             Options = poll.Options?.Select(opt => new VoteOptionDTO()

@@ -1,4 +1,5 @@
 ﻿using ClassLibrary;
+using WebFront.Services;
 
 namespace WebFront.Components.Pages;
 
@@ -23,9 +24,10 @@ public partial class Home
     
     private async Task Vote(VoteOptions vo)
     {
+        Users? user = LoginService.GetLoggedinnUser();
         Votes vote = new Votes()
         {
-            UserId = null,
+            UserId = user?.UserId ?? null,
             VoteOptionId = vo.VoteOptionId
         };
         await VoteService.CreateVote(vote);

@@ -45,7 +45,7 @@ public partial class NewPoll
         Users? loggedIn = LoginService.GetLoggedinnUser();
         if (loggedIn != null)
         {
-            NPoll.UserId = /*loggedIn.UserId*/ 0;
+            NPoll.UserId = loggedIn.UserId;
         }
     }
 }
