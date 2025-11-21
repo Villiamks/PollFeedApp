@@ -1,4 +1,5 @@
 using ClassLibrary;
+using ClassLibrary.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Interfaces.PollInterfaces;
 
@@ -34,10 +35,20 @@ public class PollController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<Polls>> Create(Polls poll)
+    public async Task<ActionResult<Polls>> Create(PollDTO dto)
     {
         try
         {
+            Polls poll = new Polls()
+            {
+                UserId =  dto.UserId,
+                Question = dto.Question
+            };
+            poll.Options = dto.Options.Select(opt => new VoteOptions()
+            {
+                Caption =  opt.Caption,
+            }).ToList();
+            
             var createdPoll = await _pollService.CreatePoll(poll);
             return CreatedAtAction(nameof(GetById), new {id = createdPoll.PollId},  createdPoll);
         }

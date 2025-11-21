@@ -1,4 +1,5 @@
 ﻿using ClassLibrary;
+using ClassLibrary.DTOs;
 
 namespace WebFront.Services;
 
@@ -21,7 +22,7 @@ public class PollService : IPollService
         return await _httpClient.GetFromJsonAsync<Polls?>($"api/poll/{pollId}");
     }
 
-    public async Task CreatePoll(Polls poll)
+    public async Task CreatePoll(PollDTO poll)
     {
         await _httpClient.PostAsJsonAsync("api/poll", poll);
     }
