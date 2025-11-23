@@ -1,4 +1,6 @@
 ﻿using ClassLibrary;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.JSInterop;
 using WebFront.Services;
 
@@ -6,6 +8,8 @@ namespace WebFront.Components.Pages;
 
 public partial class Login
 {
+    [Inject] private ProtectedSessionStorage SessionStorage { get; set; } = default!;
+
     private string username = "";
     private string password = "";
 
@@ -16,7 +20,15 @@ public partial class Login
 
         if (user != null && BCrypt.Net.BCrypt.HashPassword(password, user.Salt) == user.PasswordHash)
         {
-            LoginService.Login(user);
+            // Generate session token
+            string sessionToken = Guid.NewGuid().ToString();
+
+            // Store in Valkey
+            await LoginService.Login(user, sessionToken);
+
+            // Store token in browser session storage
+            await SessionStorage.SetAsync("sessionToken", sessionToken);
+
             nv.NavigateTo("");
         }
         else
