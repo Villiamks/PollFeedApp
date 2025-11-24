@@ -1,10 +1,14 @@
 ﻿using ClassLibrary;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using WebFront.Services;
 
 namespace WebFront.Components.Pages;
 
 public partial class Home
 {
+    [Inject] private ProtectedSessionStorage SessionStorage { get; set; } = default!;
+    
     private List<Polls> PollList = [];
 
     private async Task PopulatePolls()
@@ -24,7 +28,9 @@ public partial class Home
     
     private async Task Vote(VoteOptions vo)
     {
-        Users? user = LoginService.GetLoggedinnUser();
+        var sessionToken = SessionStorage.GetAsync<string>("sessionToken").ToString();
+        
+        Users? user = await LoginService.GetLoggedinnUser(sessionToken ?? "");
         Votes vote = new Votes()
         {
             UserId = user?.UserId ?? null,
