@@ -1,4 +1,5 @@
 using ClassLibrary;
+using ClassLibrary.DTOs;
 using WebAPI.Interfaces;
 using WebAPI.Interfaces.VoteInterfaces;
 
@@ -14,10 +15,17 @@ public class VoteService : IVoteService
         _voteRepository = voteRepository;
     }
 
-    public async Task<IEnumerable<Votes>> GetAllVotes()
+    public async Task<IEnumerable<VoteDTO>> GetAllVotes()
     {
         var votes = await _voteRepository.GetAllAsync();
-        return votes;
+        List<VoteDTO> list = votes.Select(v => new VoteDTO()
+        {
+            VoteId =  v.VoteId,
+            UserId =  v.UserId,
+            VoteOptionId = v.VoteOptionId,
+        }).ToList();
+        
+        return list;
     }
 
     public async Task<Votes?> GetVoteById(int id)

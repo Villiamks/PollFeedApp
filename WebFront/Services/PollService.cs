@@ -1,5 +1,6 @@
 ﻿using ClassLibrary;
 using ClassLibrary.DTOs;
+using Microsoft.Extensions.Options;
 
 namespace WebFront.Services;
 
@@ -12,18 +13,29 @@ public class PollService : IPollService
         _httpClient = httpClient;
     }
 
-    public async Task<IEnumerable<Polls>?> GetAllPolls()
+    public async Task<IEnumerable<Polls>?> GetAllPolls(IVoteOptionService voteOptionService)
     {
-        var inn = await _httpClient.GetFromJsonAsync<IEnumerable<PollDTO>>("api/poll");
-        return inn.Select(pdto => new Polls()
+        var inndto = await _httpClient.GetFromJsonAsync<IEnumerable<PollDTO>>("api/poll");
+        var inn = inndto.Select(pdto => new Polls()
         {
             UserId = pdto.UserId,
             Question = pdto.Question,
-            Options = pdto.Options.Select(opt => new VoteOptions()
+            Options = pdto.Options?.Select(opt => new VoteOptions()
             {
+                VoteOptionId = opt.VoteOptionId,
                 Caption = opt.Caption
             }).ToList()
         }).ToList();
+
+        foreach (Polls poll in inn)
+        {
+            foreach (var option in poll.Options ?? [])
+            {
+                option.Votes = await voteOptionService.GetVotes(option);
+            }
+        }
+        
+        return inn;
     }
 
     public async Task<Polls?> GetPollById(int pollId)

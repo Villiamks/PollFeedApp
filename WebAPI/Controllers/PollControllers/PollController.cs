@@ -29,7 +29,14 @@ public class PollController : ControllerBase
             Question = poll.Question,
             Options = poll.Options?.Select(opt => new VoteOptionDTO()
             {
-                Caption = opt.Caption
+                VoteOptionId =  opt.VoteOptionId,
+                Caption = opt.Caption,
+                Votes = opt.Votes?.Select(vote => new VoteDTO()
+                {
+                    VoteId = vote.VoteId,
+                    VoteOptionId = vote.VoteOptionId,
+                    UserId = vote.UserId
+                }).ToList() ?? []
             }).ToList()
         }).ToList();
         

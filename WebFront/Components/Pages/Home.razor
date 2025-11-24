@@ -3,6 +3,7 @@
 @using WebFront.Services
 @inject IPollService PollService
 @inject IVoteService VoteService
+@inject IVoteOptionService VoteOptionService
 @inject ILoginService LoginService
 
 <PageTitle>Home</PageTitle>
@@ -17,7 +18,7 @@
             @foreach (VoteOptions vo in poll.Options ?? [])
             {
                 <button class="votebtn" type="button" @onclick="() => Vote(vo)" >
-                    <span class="votespan"> Votes: @vo.Votes?.Count</span>
+                    <span class="votespan"> Votes: @vo.Votes?.Count </span>
                     <span class="votecap">@vo.Caption</span>
                 </button>
             }

@@ -1,4 +1,5 @@
 ﻿using ClassLibrary;
+using ClassLibrary.DTOs;
 
 namespace WebFront.Services;
 
@@ -19,6 +20,17 @@ public class VoteOptionService : IVoteOptionService
     public async Task<VoteOptions?> GetVoteOptionById(int id)
     {
         return await _httpClient.GetFromJsonAsync<VoteOptions>($"api/VoteOption/{id}");
+    }
+
+    public async Task<List<Votes>> GetVotes(VoteOptions voteOptions)
+    {
+        var list = await _httpClient.GetFromJsonAsync<IEnumerable<VoteDTO>>($"api/Vote/");
+        return list?.Where(v => v.VoteOptionId == voteOptions.VoteOptionId ).Select(v => new Votes()
+        {
+            VoteId =  v.VoteId,
+            UserId = v.UserId,
+            VoteOptionId = v.VoteOptionId
+        }).ToList() ?? [];
     }
 
     public async Task CreateVoteOption(VoteOptions voteOptions)

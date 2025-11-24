@@ -10,7 +10,7 @@ public partial class Home
     private async Task PopulatePolls()
     {
         PollList.Clear();
-        var tmp = await PollService.GetAllPolls();
+        var tmp = await PollService.GetAllPolls(VoteOptionService);
         List<Polls> list = tmp.ToList();
         if (list != null)
         {
@@ -30,11 +30,13 @@ public partial class Home
             UserId = user?.UserId ?? null,
             VoteOptionId = vo.VoteOptionId
         };
+        vo.Votes?.Add(vote);
         await VoteService.CreateVote(vote);
     }
 
     protected override async Task OnInitializedAsync()
     {
         await PopulatePolls();
+        await VoteService.GetVotes();
     }
 }

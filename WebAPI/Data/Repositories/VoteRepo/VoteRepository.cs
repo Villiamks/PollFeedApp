@@ -7,6 +7,11 @@ namespace WebAPI.Data.VoteRepo;
 public class VoteRepository : IRepository<Votes>
 {
     private IDbContextFactory<ApplicationDbContext>  _contextFactory;
+
+    public VoteRepository(IDbContextFactory<ApplicationDbContext> contextFactory)
+    {
+        _contextFactory = contextFactory;
+    }
     
     public async Task<IEnumerable<Votes>> GetAllAsync()
     {
