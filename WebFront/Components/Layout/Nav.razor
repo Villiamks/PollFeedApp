@@ -1,6 +1,8 @@
 @using WebFront.Services
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject NavigationManager nv
 @inject ILoginService LoginService
+@inject ProtectedSessionStorage SessionStorage
 
 @if (showNav)
 {
@@ -8,7 +10,7 @@
         <div class="btnclose"><button @onclick="ToggleNav">x</button></div>
         <button type="button" @onclick="() => NavigateTo(PollsUrl)" ><span> Polls </span></button>
         <button type="button" @onclick="() => NavigateTo(NewPollUrl)" ><span>New Poll</span></button>
-        @if (LoginService.IsLoggedIn())
+        @if (isLoggedIn)
         {
             <button type="button" @onclick="Loggout"><span>Logg out</span></button>
         }

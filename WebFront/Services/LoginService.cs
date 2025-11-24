@@ -1,38 +1,62 @@
 ﻿using ClassLibrary;
+using StackExchange.Redis;
+using System.Text.Json;
 
 namespace WebFront.Services;
 
 public class LoginService : ILoginService
 {
-    private Users? LoggedinnUser;
+    private readonly IConnectionMultiplexer _redis;
+    private readonly IUserService _userService;
+    private string? _sessionToken;
 
-    public LoginService()
+    public LoginService(IConnectionMultiplexer redis, IUserService userService)
     {
-        LoggedinnUser = null;
+        _redis = redis;
+        _userService = userService;
     }
 
-    public void Login(Users user)
+    public async Task Login(Users user, string sessionToken)
     {
-        LoggedinnUser = user;
-        //TODO store with valkey
+        _sessionToken = sessionToken;
+        var db = _redis.GetDatabase();
+
+        // Store userId in Valkey with session token as key, expire after 30 minutes
+        await db.StringSetAsync($"session:{sessionToken}", user.UserId, TimeSpan.FromMinutes(30));
     }
 
-    public void Logout()
+    public async Task Logout()
     {
-        LoggedinnUser = null;
-        //TODO Remove from valkey
+        if (_sessionToken != null)
+        {
+            var db = _redis.GetDatabase();
+            await db.KeyDeleteAsync($"session:{_sessionToken}");
+            _sessionToken = null;
+        }
     }
 
-    public bool IsLoggedIn()
+    public async Task<bool> IsLoggedIn(string? sessionToken)
     {
-        //TODO check if there is a user logged inn via Valkey
-        //return LoggedinnUser != null;
+        if (string.IsNullOrEmpty(sessionToken))
+            return false;
 
-        return true; //Temporary 
+        var db = _redis.GetDatabase();
+        var userId = await db.StringGetAsync($"session:{sessionToken}");
+        return userId.HasValue;
     }
-    
-    public Users GetLoggedinnUser()
+
+    public async Task<Users?> GetLoggedinnUser(string sessionToken)
     {
-        return LoggedinnUser;
+        var db = _redis.GetDatabase();
+        var userId = await db.StringGetAsync($"session:{sessionToken}");
+
+        if (!userId.HasValue)
+            return null;
+
+        _sessionToken = sessionToken;
+
+        // Fetch user from API
+        var users = await _userService.GetUsers();
+        return users?.FirstOrDefault(u => u.UserId == (int)userId);
     }
 }
