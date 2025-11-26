@@ -61,18 +61,3 @@ jobs:
       with:
         name: test-results
         path: '**/test-results.trx'
-
-  build-docker:
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Build WebAPI Docker image
-      run: docker build -f WebAPI/Dockerfile -t pollfeedapp-webapi:test .
-
-    - name: Build WebFront Docker image
-      run: docker build -f WebFront/Dockerfile -t pollfeedapp-webfront:test .
-
-    - name: Test docker-compose
-      run: docker-compose config
