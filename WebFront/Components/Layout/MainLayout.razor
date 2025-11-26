@@ -16,18 +16,25 @@
 
 @code
 {
-    protected override async Task OnInitializedAsync()
+    private bool hasRendered = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        // Get session token from browser storage
-        var tokenResult = await SessionStorage.GetAsync<string>("sessionToken");
-        string? sessionToken = tokenResult.Success ? tokenResult.Value : null;
-
-        // Check if logged in via Valkey
-        bool isLoggedIn = await LoginService.IsLoggedIn(sessionToken);
-
-        if (!isLoggedIn && nv.Uri != nv.BaseUri + "login" && nv.Uri != nv.BaseUri + "RegisterUser")
+        if (firstRender && !hasRendered)
         {
-            nv.NavigateTo("login", forceLoad:true);
+            hasRendered = true;
+
+            // Get session token from browser storage
+            var tokenResult = await SessionStorage.GetAsync<string>("sessionToken");
+            string? sessionToken = tokenResult.Success ? tokenResult.Value : null;
+
+            // Check if logged in via Valkey
+            bool isLoggedIn = await LoginService.IsLoggedIn(sessionToken);
+
+            if (!isLoggedIn && nv.Uri != nv.BaseUri + "login" && nv.Uri != nv.BaseUri + "RegisterUser")
+            {
+                nv.NavigateTo("login", forceLoad:true);
+            }
         }
     }
 }

@@ -1,0 +1,19 @@
+@page "/login"
+@using WebWasm.Services
+@inject NavigationManager nv
+@inject IUserService UserService
+@inject IJSRuntime js
+@inject ILoginService LoginService
+
+<PageTitle>Login</PageTitle>
+
+<div class="outerbox">
+    <h1>Login</h1>
+
+    <div class="box">
+        <input type="text" placeholder="username" @bind="username" />
+        <input type="password" placeholder="password" @bind="password" />
+        <button type="button" @onclick="HandleLogin" >Login</button>
+        <button type="button" @onclick="ToNewUser">New User</button>
+    </div>
+</div>

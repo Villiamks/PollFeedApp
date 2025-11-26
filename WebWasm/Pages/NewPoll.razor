@@ -1,0 +1,24 @@
+@page "/newpoll"
+@inject NavigationManager nv
+@using WebWasm.Models
+@using WebWasm.Services
+@inject IPollService PollService
+@inject IVoteOptionService VoteOptionService
+@inject ILoginService LoginService
+
+<PageTitle>NewPoll</PageTitle>
+
+<div class="outerbox">
+    <h1>New Poll</h1>
+
+    <div class="box">
+        <input type="text" placeholder="Question" @bind="NPoll.Question"/>
+        @foreach (VoteOptions vo in NPoll.Options ?? [])
+        {
+            <input type="text" placeholder="Caption" @bind="vo.Caption"/>
+        }
+        <button type="button" @onclick="AddOption" >Add Caption</button>
+
+        <button type="button" @onclick="CreatePoll">Create Poll</button>
+    </div>
+</div>

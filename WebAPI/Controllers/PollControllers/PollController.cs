@@ -55,7 +55,7 @@ public class PollController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<Polls>> Create(PollDTO dto)
+    public async Task<ActionResult<PollDTO>> Create(PollDTO dto)
     {
         try
         {
@@ -68,9 +68,24 @@ public class PollController : ControllerBase
             {
                 Caption =  opt.Caption,
             }).ToList();
-            
+
             var createdPoll = await _pollService.CreatePoll(poll);
-            return CreatedAtAction(nameof(GetById), new {id = createdPoll.PollId},  createdPoll);
+
+            // Convert to DTO to avoid circular references
+            var pollDto = new PollDTO()
+            {
+                PollId = createdPoll.PollId,
+                UserId = createdPoll.UserId,
+                Question = createdPoll.Question,
+                Options = createdPoll.Options?.Select(opt => new VoteOptionDTO()
+                {
+                    VoteOptionId = opt.VoteOptionId,
+                    Caption = opt.Caption,
+                    Votes = []
+                }).ToList() ?? []
+            };
+
+            return CreatedAtAction(nameof(GetById), new {id = createdPoll.PollId}, pollDto);
         }
         catch (Exception e)
         {

@@ -1,0 +1,17 @@
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace WebWasm.Models;
+
+public class Polls
+{
+    [Key]
+    public int PollId { get; set; }
+    [Required]
+    public string Question { get; set; }
+    [ForeignKey(nameof(UserId))]
+    public int UserId { get; set; }
+    
+    public Users? Creator { get; set; }
+    public ICollection<VoteOptions>? Options { get; set; } = new List<VoteOptions>();
+}

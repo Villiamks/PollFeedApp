@@ -26,13 +26,24 @@ public partial class Nav
         nv.NavigateTo("login");
     }
 
-    protected async override Task OnInitializedAsync()
+    private bool hasRendered = false;
+
+    protected override void OnInitialized()
     {
         showNav = false;
+    }
 
-        // Check if user is logged in
-        var tokenResult = await SessionStorage.GetAsync<string>("sessionToken");
-        string? sessionToken = tokenResult.Success ? tokenResult.Value : null;
-        isLoggedIn = await LoginService.IsLoggedIn(sessionToken);
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !hasRendered)
+        {
+            hasRendered = true;
+
+            // Check if user is logged in
+            var tokenResult = await SessionStorage.GetAsync<string>("sessionToken");
+            string? sessionToken = tokenResult.Success ? tokenResult.Value : null;
+            isLoggedIn = await LoginService.IsLoggedIn(sessionToken);
+            StateHasChanged();
+        }
     }
 }
