@@ -1,4 +1,5 @@
 ﻿using ClassLibrary;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Interfaces;
 
@@ -6,6 +7,7 @@ namespace WebAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class UserController : ControllerBase
 {
     private IUserService _userService;
@@ -39,7 +41,7 @@ public class UserController : ControllerBase
         try
         {
             var createdUser = await _userService.CreateUser(user);
-            return CreatedAtAction(nameof(GetById), new {id = createdUser.UserId}, createdUser);
+            return CreatedAtAction(nameof(GetById), new {id = createdUser.Id}, createdUser);
         }
         catch (Exception e)
         {

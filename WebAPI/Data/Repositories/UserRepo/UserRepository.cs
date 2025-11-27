@@ -2,7 +2,7 @@ using ClassLibrary;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.Interfaces;
 
-namespace WebAPI.Data;
+namespace WebAPI.Data.UserRepo;
 
 public class UserRepository : IRepository<Users>
 {
@@ -28,7 +28,7 @@ public class UserRepository : IRepository<Users>
         return await context.Set<Users>()
             .Include(p => p.Polls)
             .Include(v => v.Votes)
-            .FirstOrDefaultAsync(u => u.UserId == id);
+            .FirstOrDefaultAsync(u => u.Id == id);
     }
 
     public async Task<Users> CreateAsync(Users entity)
@@ -43,7 +43,7 @@ public class UserRepository : IRepository<Users>
     {
         using var context = _contextFactory.CreateDbContext();
         var entity = await context.Set<Users>()
-            .FirstOrDefaultAsync(u => u.UserId == id);
+            .FirstOrDefaultAsync(u => u.Id == id);
 
         if (entity == null) return null;
         
