@@ -51,7 +51,7 @@ public partial class NewPoll
         Users? loggedIn = await LoginService.GetLoggedinnUser(sessionToken ?? "");
         if (loggedIn != null)
         {
-            NPoll.UserId = loggedIn.UserId;
+            NPoll.UserId = loggedIn.Id;
         }
     }
 }

@@ -1,25 +1,43 @@
-@using WebFront.Services
-@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using Microsoft.AspNetCore.Components.Authorization
 @inject NavigationManager nv
-@inject ILoginService LoginService
-@inject ProtectedSessionStorage SessionStorage
+@inject AuthenticationStateProvider AuthProvider
 
-@if (showNav)
-{
-    <div class="navbox">
-        <div class="btnclose"><button @onclick="ToggleNav">x</button></div>
-        <button type="button" @onclick="() => NavigateTo(PollsUrl)" ><span> Polls </span></button>
-        <button type="button" @onclick="() => NavigateTo(NewPollUrl)" ><span>New Poll</span></button>
-        @if (isLoggedIn)
-        {
-            <button type="button" @onclick="Loggout"><span>Logg out</span></button>
-        }
-        else
-        {
-            <button type="button" @onclick="() => NavigateTo(LoginUrl)" ><span>Logg inn</span></button>
-        }
+<AuthorizeView>
+    <Authorized>
+        <div class="navbox">
+            <div class="btnclose"><button @onclick="ToggleNav">x</button></div>
+            <button type="button" @onclick="() => NavigateTo(PollsUrl)"><span>Polls</span></button>
+            <button type="button" @onclick="() => NavigateTo(NewPollUrl)"><span>New Poll</span></button>
+            <button type="button" @onclick="Logout"><span>Log out (@context.User.Identity?.Name)</span></button>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <div class="navbox">
+            <div class="btnclose"><button @onclick="ToggleNav">x</button></div>
+            <button type="button" @onclick="() => NavigateTo(LoginUrl)"><span>Log in</span></button>
+        </div>
+    </NotAuthorized>
+</AuthorizeView>
 
-    </div>
+<button class="navbtn" @onclick="ToggleNav">=</button>
+
+@code {
+    private bool showNav = true;
+    private string PollsUrl = "polls"; // update paths as needed
+    private string NewPollUrl = "newpoll";
+    private string LoginUrl = "login";
+
+    private void ToggleNav() => showNav = !showNav;
+
+    private void NavigateTo(string url)
+    {
+        nv.NavigateTo(url);
+    }
+
+    private async Task Logout()
+    {
+        var customProvider = (WebFront.Services.CustomAuthProvider)AuthProvider;
+        await customProvider.Logout();
+        nv.NavigateTo("login");
+    }
 }
-
-<button class="navbtn" @onclick="ToggleNav">=</button> 

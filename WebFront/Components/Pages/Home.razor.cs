@@ -33,7 +33,7 @@ public partial class Home
         Users? user = await LoginService.GetLoggedinnUser(sessionToken ?? "");
         Votes vote = new Votes()
         {
-            UserId = user?.UserId ?? null,
+            UserId = user?.Id ?? null,
             VoteOptionId = vo.VoteOptionId
         };
         vo.Votes?.Add(vote);

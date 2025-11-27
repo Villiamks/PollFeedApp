@@ -1,6 +1,6 @@
-﻿using ClassLibrary;
+﻿using ClassLibrary.DTOs;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+using Microsoft.AspNetCore.Components.Authorization; // Needed
 using Microsoft.JSInterop;
 using WebFront.Services;
 
@@ -8,36 +8,35 @@ namespace WebFront.Components.Pages;
 
 public partial class Login
 {
-    [Inject] private ProtectedSessionStorage SessionStorage { get; set; } = default!;
-
+    // Inject the AuthenticationStateProvider
+    [Inject] private AuthenticationStateProvider AuthStateProvider { get; set; } = default!;
+    
     private string username = "";
     private string password = "";
 
     private async Task HandleLogin()
     {
-        var userList = await UserService.GetUsers();
-        Users user = userList.ToList().FirstOrDefault(u => u.UserName == username);
+        var loginDto = new LoginDTO { Username = username, Password = password };
+        
+        // 1. Call API
+        var token = await UserService.LoginUser(loginDto);
 
-        if (user != null && BCrypt.Net.BCrypt.HashPassword(password, user.Salt) == user.PasswordHash)
+        if (!string.IsNullOrEmpty(token))
         {
-            // Generate session token
-            string sessionToken = Guid.NewGuid().ToString();
-
-            // Store in Valkey
-            await LoginService.Login(user, sessionToken);
-
-            // Store token in browser session storage
-            await SessionStorage.SetAsync("sessionToken", sessionToken);
-
+            // 2. Notify Auth Provider
+            var customProvider = (CustomAuthProvider)AuthStateProvider;
+            await customProvider.Login(token);
+            
+            // 3. Navigate
             nv.NavigateTo("");
         }
         else
         {
-            await js.InvokeVoidAsync("alert", "Wrong username or password");
+            await js.InvokeVoidAsync("alert", "Invalid credentials");
         }
     }
 
-    private async Task ToNewUser()
+    private void ToNewUser()
     {
         nv.NavigateTo("RegisterUser");
     }

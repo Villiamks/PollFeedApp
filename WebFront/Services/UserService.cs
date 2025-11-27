@@ -1,6 +1,7 @@
 ﻿using ClassLibrary;
 
 namespace WebFront.Services;
+using ClassLibrary.DTOs;
 
 public class UserService : IUserService
 {
@@ -9,6 +10,29 @@ public class UserService : IUserService
     public UserService(HttpClient httpClient)
     {
         _httpClient = httpClient;
+    }
+
+    public async Task<bool> RegisterUser(RegisterDTO registerDTO)
+    {
+        var response = await _httpClient.PostAsJsonAsync("api/Auth/register",  registerDTO);
+        return response.IsSuccessStatusCode;
+    }
+
+    public async Task<string?> LoginUser(LoginDTO loginDTO)
+    {
+        var response = await _httpClient.PostAsJsonAsync("api/Auth/login", loginDTO);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
+            return result?.Token;
+        }
+        return null;
+    }
+
+    private class LoginResponse
+    {
+        public string Token { get; set; }
     }
     
     public async Task<IEnumerable<Users>?> GetUsers()
@@ -21,21 +45,11 @@ public class UserService : IUserService
         return await _httpClient.GetFromJsonAsync<Users>($"api/user/{id}");
     }
 
-    public async Task CreateUser(string username, string password, string email)
+    public Task CreateUser(string userName, string password, string email)
     {
-        string salt = BCrypt.Net.BCrypt.GenerateSalt(12);
-        string hash = BCrypt.Net.BCrypt.HashPassword(password, salt);
-        Users user = new Users()
-        {
-            UserName = username,
-            Email = email,
-            PasswordHash = hash,
-            Salt = salt,
-        };
-        
-        await _httpClient.PostAsJsonAsync("api/user", user);
+        throw new NotImplementedException();
     }
-    
+
     public async Task DeleteUser(int id)
     {
         await _httpClient.DeleteAsync($"api/user/{id}");

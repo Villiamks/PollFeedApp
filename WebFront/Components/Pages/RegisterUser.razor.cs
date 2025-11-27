@@ -1,4 +1,5 @@
 ﻿using ClassLibrary;
+using ClassLibrary.DTOs;
 using Microsoft.JSInterop;
 
 namespace WebFront.Components.Pages;
@@ -12,23 +13,30 @@ public partial class RegisterUser
 
     private async Task HandleRegistration()
     {
-        if (Username == "" || Password == "" || RepeatPass == "" || Email == "")
-        {
-            await js.InvokeVoidAsync("alert", "All Fields are required");
-            return;
-        }
         if (Password != RepeatPass)
         {
-            await js.InvokeVoidAsync("alert", "Passwords do not match");
-            return;
-        } 
-        if ( await Exists(Username))
-        {
-            await js.InvokeVoidAsync("alert", "Username already exists");
+            await js.InvokeVoidAsync("alert", "Passwords don't match");
             return;
         }
-        await UserService.CreateUser(Username, Password, Email);
-        nv.NavigateTo("login");
+
+        var dto = new RegisterDTO
+        {
+            Username = Username,
+            Email = Email,
+            Password = Password
+        };
+
+        var success = await UserService.RegisterUser(dto);
+
+        if (success)
+        {
+            await js.InvokeVoidAsync("alert", "Success! Please login.");
+            nv.NavigateTo("/login");
+        }
+        else
+        {
+            await js.InvokeVoidAsync("alert", "Registration failed. Please try again.");
+        }
     }
 
     private async Task<bool> Exists(string username)

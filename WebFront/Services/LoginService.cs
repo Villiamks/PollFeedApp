@@ -22,7 +22,7 @@ public class LoginService : ILoginService
         var db = _redis.GetDatabase();
 
         // Store userId in Valkey with session token as key, expire after 30 minutes
-        await db.StringSetAsync($"session:{sessionToken}", user.UserId, TimeSpan.FromMinutes(30));
+        await db.StringSetAsync($"session:{sessionToken}", user.Id, TimeSpan.FromMinutes(30));
     }
 
     public async Task Logout()
@@ -57,6 +57,6 @@ public class LoginService : ILoginService
 
         // Fetch user from API
         var users = await _userService.GetUsers();
-        return users?.FirstOrDefault(u => u.UserId == (int)userId);
+        return users?.FirstOrDefault(u => u.Id == (int)userId);
     }
 }

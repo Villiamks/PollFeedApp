@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Components.Authorization;
 using WebFront.Components;
 using WebFront.Services;
 using StackExchange.Redis;
@@ -18,7 +19,8 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IVoteService, VoteService>();
 builder.Services.AddScoped<IPollService, PollService>();
 builder.Services.AddScoped<IVoteOptionService, VoteOptionService>();
-builder.Services.AddScoped<ILoginService, LoginService>();
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthProvider>();
+builder.Services.AddCascadingAuthenticationState();
 
 var app = builder.Build();
 
