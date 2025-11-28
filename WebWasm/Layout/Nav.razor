@@ -1,0 +1,24 @@
+@using WebWasm.Services
+@inject NavigationManager nv
+@inject ILoginService LoginService
+@inject IJSRuntime JSRuntime
+
+@if (showNav)
+{
+    <div class="navbox">
+        <div class="btnclose"><button @onclick="ToggleNav">x</button></div>
+        <button type="button" @onclick="() => NavigateTo(PollsUrl)" ><span> Polls </span></button>
+        <button type="button" @onclick="() => NavigateTo(NewPollUrl)" ><span>New Poll</span></button>
+        @if (isLoggedIn)
+        {
+            <button type="button" @onclick="Loggout"><span>Logg out</span></button>
+        }
+        else
+        {
+            <button type="button" @onclick="() => NavigateTo(LoginUrl)" ><span>Logg inn</span></button>
+        }
+
+    </div>
+}
+
+<button class="navbtn" @onclick="ToggleNav">=</button>

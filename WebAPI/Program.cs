@@ -15,6 +15,17 @@ using WebAPI.Services.VoteServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add CORS policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowWebAssembly", policy =>
+    {
+        policy.WithOrigins("http://localhost:5183", "https://localhost:5183")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
@@ -37,6 +48,9 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
+// Enable CORS
+app.UseCors("AllowWebAssembly");
 
 app.MapControllers();
 

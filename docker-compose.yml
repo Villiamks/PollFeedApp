@@ -1,6 +1,24 @@
 version: '3.8'
 
 services:
+  postgres:
+    image: postgres:16
+    container_name: pollfeedapp-postgres
+    environment:
+      POSTGRES_DB: pollfeeddb
+      POSTGRES_USER: pollapp
+      POSTGRES_PASSWORD: pollapp123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pollapp -d pollfeeddb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
   valkey:
     image: valkey/valkey:latest
     container_name: pollfeedapp-valkey
@@ -8,7 +26,51 @@ services:
       - "6379:6379"
     volumes:
       - valkey-data:/data
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  webapi:
+    build:
+      context: .
+      dockerfile: WebAPI/Dockerfile
+    container_name: pollfeedapp-webapi
+    ports:
+      - "5126:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=pollfeeddb;Username=pollapp;Password=pollapp123
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  webfront:
+    build:
+      context: .
+      dockerfile: WebFront/Dockerfile
+    container_name: pollfeedapp-webfront
+    ports:
+      - "5183:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=pollfeeddb;Username=pollapp;Password=pollapp123
+      - Valkey__ConnectionString=valkey:6379
+      - ApiBaseUrl=http://webapi:8080
+    depends_on:
+      postgres:
+        condition: service_healthy
+      valkey:
+        condition: service_healthy
+      webapi:
+        condition: service_started
     restart: unless-stopped
 
 volumes:
+  postgres-data:
   valkey-data:
