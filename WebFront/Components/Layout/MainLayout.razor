@@ -1,33 +1,10 @@
-﻿@using WebFront.Services
-@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
-@inherits LayoutComponentBase
-
-@inject ILoginService LoginService
+﻿@inherits LayoutComponentBase
+@using Microsoft.AspNetCore.Components.Authorization
 @inject NavigationManager nv
-@inject ProtectedSessionStorage SessionStorage
 
 <div class="page">
     <main>
         <Nav></Nav>
-        
         @Body
     </main>
 </div>
-
-@code
-{
-    protected override async Task OnInitializedAsync()
-    {
-        // Get session token from browser storage
-        var tokenResult = await SessionStorage.GetAsync<string>("sessionToken");
-        string? sessionToken = tokenResult.Success ? tokenResult.Value : null;
-
-        // Check if logged in via Valkey
-        bool isLoggedIn = await LoginService.IsLoggedIn(sessionToken);
-
-        if (!isLoggedIn && nv.Uri != nv.BaseUri + "login" && nv.Uri != nv.BaseUri + "RegisterUser")
-        {
-            nv.NavigateTo("login", forceLoad:true);
-        }
-    }
-}

@@ -1,4 +1,5 @@
 @using Microsoft.AspNetCore.Components.Authorization
+@using WebFront.Services
 @inject NavigationManager nv
 @inject AuthenticationStateProvider AuthProvider
 
@@ -20,24 +21,3 @@
 </AuthorizeView>
 
 <button class="navbtn" @onclick="ToggleNav">=</button>
-
-@code {
-    private bool showNav = true;
-    private string PollsUrl = "polls"; // update paths as needed
-    private string NewPollUrl = "newpoll";
-    private string LoginUrl = "login";
-
-    private void ToggleNav() => showNav = !showNav;
-
-    private void NavigateTo(string url)
-    {
-        nv.NavigateTo(url);
-    }
-
-    private async Task Logout()
-    {
-        var customProvider = (WebFront.Services.CustomAuthProvider)AuthProvider;
-        await customProvider.Logout();
-        nv.NavigateTo("login");
-    }
-}

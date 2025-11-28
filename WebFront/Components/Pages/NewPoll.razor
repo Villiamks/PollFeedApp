@@ -1,10 +1,12 @@
 @page "/newpoll"
 @inject NavigationManager nv
 @using ClassLibrary
+@using Microsoft.AspNetCore.Authorization
 @using WebFront.Services
 @inject IPollService PollService
 @inject IVoteOptionService VoteOptionService
 @inject ILoginService LoginService
+@attribute [Authorize]
 
 <PageTitle>NewPoll</PageTitle>
 

@@ -1,38 +1,33 @@
+using Microsoft.AspNetCore.Components;
+using WebFront.Services;
+
 namespace WebFront.Components.Layout;
 
 public partial class Nav
 {
-    private bool showNav;
-    private bool isLoggedIn;
-    private String PollsUrl = "";
-    private String NewPollUrl = "/newpoll";
-    private String LoginUrl = "/login";
+    // These fields caused the "already contains a definition" error
+    private bool showNav = true;
+    private string PollsUrl = "polls";
+    private string NewPollUrl = "newpoll";
+    private string LoginUrl = "login";
 
-    private async Task ToggleNav()
+    private void ToggleNav()
     {
         showNav = !showNav;
     }
 
-    private async Task NavigateTo(String url)
+    private void NavigateTo(string url)
     {
-        await ToggleNav();
+        // 'nv' is available here because it is @injected in the .razor file
         nv.NavigateTo(url);
     }
 
-    private async Task Loggout()
+    private async Task Logout()
     {
-        await LoginService.Logout();
-        await SessionStorage.DeleteAsync("sessionToken");
-        nv.NavigateTo("login");
-    }
-
-    protected async override Task OnInitializedAsync()
-    {
-        showNav = false;
-
-        // Check if user is logged in
-        var tokenResult = await SessionStorage.GetAsync<string>("sessionToken");
-        string? sessionToken = tokenResult.Success ? tokenResult.Value : null;
-        isLoggedIn = await LoginService.IsLoggedIn(sessionToken);
+        if (AuthProvider is CustomAuthProvider customProvider)
+        {
+            await customProvider.Logout();
+            nv.NavigateTo("login", true);
+        }
     }
 }
