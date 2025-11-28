@@ -1,15 +1,19 @@
 ﻿using ClassLibrary;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 
 namespace WebFront.Services;
 using ClassLibrary.DTOs;
+using System.Net.Http.Headers;
 
 public class UserService : IUserService
 {
     private readonly HttpClient _httpClient;
+    private readonly ProtectedSessionStorage _sessionStorage;
     
-    public UserService(HttpClient httpClient)
+    public UserService(HttpClient httpClient, ProtectedSessionStorage sessionStorage)
     {
         _httpClient = httpClient;
+        _sessionStorage = sessionStorage;
     }
 
     public async Task<bool> RegisterUser(RegisterDTO registerDTO)
@@ -42,6 +46,7 @@ public class UserService : IUserService
 
     public async Task<Users?> GetUser(int id)
     {
+        await SetAuthHeader();
         return await _httpClient.GetFromJsonAsync<Users>($"api/user/{id}");
     }
 
@@ -52,6 +57,29 @@ public class UserService : IUserService
 
     public async Task DeleteUser(int id)
     {
+        await SetAuthHeader();
         await _httpClient.DeleteAsync($"api/user/{id}");
+    }
+    
+    private async Task SetAuthHeader()
+    {
+        try
+        {
+            // Retrieve the token from the same storage your CustomAuthProvider uses
+            var result = await _sessionStorage.GetAsync<string>("authToken");
+
+            if (result.Success && !string.IsNullOrEmpty(result.Value))
+            {
+                // Attach the token to the Authorization header
+                _httpClient.DefaultRequestHeaders.Authorization = 
+                    new AuthenticationHeaderValue("Bearer", result.Value);
+            }
+        }
+        catch
+        {
+            // This might fail during server-side prerendering (when JS isn't available).
+            // We swallow the error so the app doesn't crash, 
+            // though the API call will likely fail with 401 if it happens.
+        }
     }
 }

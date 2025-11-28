@@ -1,11 +1,12 @@
 ﻿@page "/"
 @using ClassLibrary
+@using Microsoft.AspNetCore.Authorization
 @using WebFront.Services
 @inject IPollService PollService
 @inject IVoteService VoteService
 @inject IVoteOptionService VoteOptionService
 @inject ILoginService LoginService
-
+@attribute [AllowAnonymous]
 <PageTitle>Home</PageTitle>
 
 <div class="outerbox">

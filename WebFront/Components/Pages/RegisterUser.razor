@@ -1,8 +1,10 @@
 ﻿@page "/RegisterUser"
+@using Microsoft.AspNetCore.Authorization
 @using WebFront.Services
 @inject IJSRuntime js
 @inject IUserService UserService
 @inject NavigationManager nv
+@attribute [AllowAnonymous]
 
 <div class="outerbox">
     <h1>RegisterUser</h1>

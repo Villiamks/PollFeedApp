@@ -2,12 +2,15 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using WebFront.Services;
+using Microsoft.AspNetCore.Components.Authorization;
+using System.Security.Claims;
 
 namespace WebFront.Components.Pages;
 
 public partial class Home
 {
     [Inject] private ProtectedSessionStorage SessionStorage { get; set; } = default!;
+    [Inject] private AuthenticationStateProvider AuthStateProvider { get; set; } = default!;
     
     private List<Polls> PollList = [];
 
@@ -28,15 +31,33 @@ public partial class Home
     
     private async Task Vote(VoteOptions vo)
     {
-        var sessionToken = SessionStorage.GetAsync<string>("sessionToken").ToString();
-        
-        Users? user = await LoginService.GetLoggedinnUser(sessionToken ?? "");
+        // 1. Get the current user from the Auth State
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var userPrincipal = authState.User;
+
+        int? userId = null;
+
+        // 2. Extract the ID from the claims (saved in the JWT)
+        if (userPrincipal.Identity is { IsAuthenticated: true })
+        {
+            // "nameid" is the standard claim for ID
+            var idClaim = userPrincipal.FindFirst(ClaimTypes.NameIdentifier);
+            if (idClaim != null && int.TryParse(idClaim.Value, out int parsedId))
+            {
+                userId = parsedId;
+            }
+        }
+
+        // 3. Create the vote
         Votes vote = new Votes()
         {
-            UserId = user?.Id ?? null,
+            UserId = userId,
             VoteOptionId = vo.VoteOptionId
         };
-        vo.Votes?.Add(vote);
+
+        if (vo.Votes == null) vo.Votes = new List<Votes>();
+        vo.Votes.Add(vote);
+
         await VoteService.CreateVote(vote);
     }
 

@@ -30,9 +30,9 @@ public class CustomAuthProvider : AuthenticationStateProvider
                 return new AuthenticationState(user);
             }
         }
-        catch
+        catch (Exception ex)
         {
-            // If storage fails (rendering on server before JS is ready), return anonymous
+            Console.WriteLine($"Authentication failed: {ex.Message}");
         }
 
         return new AuthenticationState(_anonymous);

@@ -1,9 +1,11 @@
 ﻿@page "/login"
+@using Microsoft.AspNetCore.Authorization
 @using WebFront.Services
 @inject NavigationManager nv
 @inject IUserService UserService
 @inject IJSRuntime js
 @inject ILoginService LoginService
+@attribute [AllowAnonymous]
 
 <PageTitle>NewPoll</PageTitle>
 

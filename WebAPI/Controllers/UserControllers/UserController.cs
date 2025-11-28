@@ -7,7 +7,6 @@ namespace WebAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
 public class UserController : ControllerBase
 {
     private IUserService _userService;

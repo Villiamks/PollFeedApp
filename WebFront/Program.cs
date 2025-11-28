@@ -3,6 +3,7 @@ using WebFront.Components;
 using WebFront.Services;
 using StackExchange.Redis;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
