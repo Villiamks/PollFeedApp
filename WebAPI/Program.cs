@@ -91,7 +91,6 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddDbContextFactory<ApplicationDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IPollsService, PollService>();
-builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IVoteOptionService, VoteOptionService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IVoteService, VoteService>();
